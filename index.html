@@ -1,56 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Token Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard • Web3</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
 
-    <header>
-        <h1>Crypto Dashboard</h1>
-        <p>Track your favorite tokens</p>
-    </header>
-
-    <main>
-
-    <div class="search-container">
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search token..."
-        >
+  <header class="navbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <span class="brand-name">terminal.eth</span>
     </div>
-        
-        <section class="token-grid">
+    
+    <div class="user-actions">
+      <button class="btn-wallet" id="walletBtn">Connect Wallet</button>
+    </div>
+  </header>
 
-            <div class="token-card">
-                <h2>Bitcoin</h2>
-                <p class="symbol">BTC</p>
-                <p class="price">$67,250</p>
-                <p class="change positive">+2.45%</p>
-            </div>
+  <main class="container">
 
-            <div class="token-card">
-                <h2>Ethereum</h2>
-                <p class="symbol">ETH</p>
-                <p class="price">$3,450</p>
-                <p class="change positive">+1.82%</p>
-            </div>
+    <section class="metrics">
+      <div class="metric-card">
+        <span class="label">Portfolio Balance</span>
+        <div class="value">$24,510.42</div>
+        <span class="tag badge-up">+8.4% 24h</span>
+      </div>
 
-            <div class="token-card">
-                <h2>Solana</h2>
-                <p class="symbol">SOL</p>
-                <p class="price">$145</p>
-                <p class="change negative">-0.65%</p>
-            </div>
+      <div class="metric-card">
+        <span class="label">Total Profit</span>
+        <div class="value">+$4,210.00</div>
+        <span class="tag badge-up">+18.2% all-time</span>
+      </div>
 
-        </section>
-    </main>
+      <div class="metric-card">
+        <span class="label">Gas Tracker (Base)</span>
+        <div class="value">0.02 Gwei</div>
+        <span class="tag badge-neutral">Normal</span>
+      </div>
+    </section>
 
-    <script src="script.js"></script>
+    <section class="grid-main">
+      
+      <div class="panel chart-panel">
+        <div class="panel-header">
+          <div class="asset-info">
+            <h2>ETH / USD</h2>
+            <span class="price-now">$3,420.80</span>
+          </div>
+          <div class="time-selector">
+            <button class="time-btn active">24H</button>
+            <button class="time-btn">7D</button>
+            <button class="time-btn">30D</button>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="mainChart"></canvas>
+        </div>
+      </div>
 
+      <div class="panel watchlist-panel">
+        <div class="panel-header">
+          <h3>Holdings</h3>
+          <span class="subtext">4 Assets</span>
+        </div>
+
+        <ul class="asset-list" id="assetList"></ul>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
