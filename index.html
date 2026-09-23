@@ -1,79 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard • Web3</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Token Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <header class="navbar">
-    <div class="brand">
-      <span class="dot"></span>
-      <span class="brand-name">terminal.eth</span>
-    </div>
-    
-    <div class="user-actions">
-      <button class="btn-wallet" id="walletBtn">Connect Wallet</button>
-    </div>
-  </header>
-
-  <main class="container">
-
-    <section class="metrics">
-      <div class="metric-card">
-        <span class="label">Portfolio Balance</span>
-        <div class="value">$24,510.42</div>
-        <span class="tag badge-up">+8.4% 24h</span>
-      </div>
-
-      <div class="metric-card">
-        <span class="label">Total Profit</span>
-        <div class="value">+$4,210.00</div>
-        <span class="tag badge-up">+18.2% all-time</span>
-      </div>
-
-      <div class="metric-card">
-        <span class="label">Gas Tracker (Base)</span>
-        <div class="value">0.02 Gwei</div>
-        <span class="tag badge-neutral">Normal</span>
-      </div>
-    </section>
-
-    <section class="grid-main">
-      
-      <div class="panel chart-panel">
-        <div class="panel-header">
-          <div class="asset-info">
-            <h2>ETH / USD</h2>
-            <span class="price-now">$3,420.80</span>
-          </div>
-          <div class="time-selector">
-            <button class="time-btn active">24H</button>
-            <button class="time-btn">7D</button>
-            <button class="time-btn">30D</button>
-          </div>
-        </div>
-        <div class="chart-wrapper">
-          <canvas id="mainChart"></canvas>
-        </div>
-      </div>
-
-      <div class="panel watchlist-panel">
-        <div class="panel-header">
-          <h3>Holdings</h3>
-          <span class="subtext">4 Assets</span>
+    <header class="navbar">
+        <div class="logo">
+            TokenBoard
         </div>
 
-        <ul class="asset-list" id="assetList"></ul>
-      </div>
+        <nav>
+            <a href="#" class="active">Dashboard</a>
+            <a href="#">Watchlist</a>
+            <a href="#">Portfolio</a>
+        </nav>
 
-    </section>
+        <button id="themeButton" class="theme-btn">
+            ◐
+        </button>
+    </header>
 
-  </main>
 
-  <script src="script.js"></script>
+    <main class="container">
+
+        <section class="page-header">
+            <div>
+                <p class="eyebrow">CRYPTO MARKET</p>
+                <h1>Token Dashboard</h1>
+                <p class="subtitle">
+                    Track prices, market caps and token performance.
+                </p>
+            </div>
+
+            <button id="refreshButton" class="refresh-btn">
+                Refresh
+            </button>
+        </section>
+
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <span>Market Cap</span>
+                <strong id="marketCap">$2.41T</strong>
+                <small class="positive">+1.82%</small>
+            </div>
+
+            <div class="stat-card">
+                <span>24h Volume</span>
+                <strong>$86.4B</strong>
+                <small class="positive">+4.21%</small>
+            </div>
+
+            <div class="stat-card">
+                <span>BTC Dominance</span>
+                <strong>57.8%</strong>
+                <small class="negative">-0.32%</small>
+            </div>
+
+            <div class="stat-card">
+                <span>Tracked Tokens</span>
+                <strong id="tokenCount">6</strong>
+                <small>Active</small>
+            </div>
+
+        </section>
+
+
+        <section class="dashboard-grid">
+
+            <div class="panel token-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Tokens</h2>
+                        <p>Latest market data</p>
+                    </div>
+
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search token..."
+                    >
+                </div>
+
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Price</th>
+                                <th>24h</th>
+                                <th>Market Cap</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tokenTable">
+
+                            <!-- Data generated by JavaScript -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <aside class="panel watchlist">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Watchlist</h2>
+                        <p>Your tracked tokens</p>
+                    </div>
+                </div>
+
+                <div id="watchlistItems">
+
+                    <div class="empty-state">
+                        <span>☆</span>
+                        <p>No tokens added yet.</p>
+                        <small>
+                            Click the star beside a token to add it.
+                        </small>
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <section class="panel market-section">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Market Overview</h2>
+                    <p>Simple 24 hour performance</p>
+                </div>
+            </div>
+
+            <div class="market-bars">
+
+                <div class="bar-row">
+                    <span>Bitcoin</span>
+                    <div class="bar">
+                        <div style="width: 78%"></div>
+                    </div>
+                    <strong>+2.4%</strong>
+                </div>
+
+                <div class="bar-row">
+                    <span>Ethereum</span>
+                    <div class="bar">
+                        <div style="width: 52%"></div>
+                    </div>
+                    <strong>+1.7%</strong>
+                </div>
+
+                <div class="bar-row">
+                    <span>Solana</span>
+                    <div class="bar">
+                        <div style="width: 91%"></div>
+                    </div>
+                    <strong>+4.8%</strong>
+                </div>
+
+                <div class="bar-row">
+                    <span>Chainlink</span>
+                    <div class="bar">
+                        <div style="width: 39%"></div>
+                    </div>
+                    <strong>+0.9%</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+        <p>TokenBoard · Crypto market dashboard</p>
+    </footer>
+
+
+    <script src="script.js"></script>
+
 </body>
 </html>
