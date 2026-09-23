@@ -1,102 +1,333 @@
-const holdings = [
-  { name: 'Ethereum', symbol: 'ETH', price: 3420.80, change: 4.2, amount: '4.2 ETH' },
-  { name: 'Bitcoin', symbol: 'BTC', price: 63150.00, change: 1.8, amount: '0.15 BTC' },
-  { name: 'Solana', symbol: 'SOL', price: 142.50, change: -2.1, amount: '18 SOL' },
-  { name: 'Arbitrum', symbol: 'ARB', price: 1.12, change: 8.5, amount: '1200 ARB' }
+const tokens = [
+    {
+        name: "Bitcoin",
+        symbol: "BTC",
+        price: 108420,
+        change: 2.41,
+        marketCap: "2.16T"
+    },
+
+    {
+        name: "Ethereum",
+        symbol: "ETH",
+        price: 4285.32,
+        change: 1.74,
+        marketCap: "516.2B"
+    },
+
+    {
+        name: "Solana",
+        symbol: "SOL",
+        price: 198.42,
+        change: 4.82,
+        marketCap: "95.7B"
+    },
+
+    {
+        name: "Chainlink",
+        symbol: "LINK",
+        price: 24.81,
+        change: 0.92,
+        marketCap: "15.9B"
+    },
+
+    {
+        name: "Avalanche",
+        symbol: "AVAX",
+        price: 31.44,
+        change: -1.21,
+        marketCap: "13.1B"
+    },
+
+    {
+        name: "Sui",
+        symbol: "SUI",
+        price: 3.74,
+        change: 3.67,
+        marketCap: "10.8B"
+    }
 ];
 
-function renderHoldings() {
-  const container = document.getElementById('assetList');
-  if (!container) return;
 
-  container.innerHTML = holdings.map(item => {
-    const isUp = item.change >= 0;
-    const changeClass = isUp ? 'up' : 'down';
-    const sign = isUp ? '+' : '';
+let watchlist = [];
 
-    return `
-      <li class="asset-row">
-        <div class="asset-meta">
-          <span class="asset-sym">${item.symbol}</span>
-          <span class="asset-name">${item.name}</span>
-        </div>
-        <div class="asset-data">
-          <div class="asset-price">$${item.price.toLocaleString()}</div>
-          <div class="asset-change ${changeClass}">${sign}${item.change}%</div>
-        </div>
-      </li>
-    `;
-  }).join('');
-}
 
-function initChart() {
-  const canvas = document.getElementById('mainChart');
-  if (!canvas) return;
+const tokenTable = document.getElementById("tokenTable");
+const searchInput = document.getElementById("searchInput");
+const watchlistItems = document.getElementById("watchlistItems");
+const tokenCount = document.getElementById("tokenCount");
 
-  const ctx = canvas.getContext('2d');
 
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', 'Now'],
-      datasets: [{
-        data: [3280, 3310, 3290, 3350, 3380, 3395, 3420.80],
-        borderColor: '#6366f1',
-        borderWidth: 2,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        tension: 0.1,
-        fill: false
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-          displayColors: false,
-          callbacks: {
-            label: (ctx) => ` Price: $${ctx.raw.toLocaleString()}`
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: '#64748b', font: { size: 11 } }
-        },
-        y: {
-          grid: { color: '#1e293b' },
-          ticks: { color: '#64748b', font: { size: 11 } }
-        }
-      }
+function formatPrice(price) {
+
+    if (price >= 1000) {
+        return "$" + price.toLocaleString(
+            "en-US",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
     }
-  });
+
+    return "$" + price.toFixed(2);
 }
 
-function setupWalletButton() {
-  const btn = document.getElementById('walletBtn');
-  let isConnected = false;
 
-  btn.addEventListener('click', () => {
-    isConnected = !isConnected;
-    if (isConnected) {
-      btn.innerText = '0x71C...39A';
-      btn.style.backgroundColor = '#10b981';
-      btn.style.color = '#ffffff';
+function renderTokens(list = tokens) {
+
+    tokenTable.innerHTML = "";
+
+    list.forEach((token) => {
+
+        const row = document.createElement("tr");
+
+        const changeClass =
+            token.change >= 0
+                ? "change-positive"
+                : "change-negative";
+
+        const changeSymbol =
+            token.change >= 0
+                ? "+"
+                : "";
+
+        const isWatched =
+            watchlist.includes(token.symbol);
+
+        row.innerHTML = `
+
+            <td>
+
+                <div class="token-name">
+
+                    <div class="token-icon">
+                        ${token.symbol.substring(0, 1)}
+                    </div>
+
+                    <div>
+                        <strong>${token.name}</strong>
+
+                        <div class="symbol">
+                            ${token.symbol}
+                        </div>
+                    </div>
+
+                </div>
+
+            </td>
+
+
+            <td>
+                ${formatPrice(token.price)}
+            </td>
+
+
+            <td class="${changeClass}">
+                ${changeSymbol}${token.change}%
+            </td>
+
+
+            <td>
+                $${token.marketCap}
+            </td>
+
+
+            <td>
+
+                <button
+                    class="star-btn"
+                    onclick="toggleWatchlist('${token.symbol}')"
+                    title="Add to watchlist"
+                >
+                    ${isWatched ? "★" : "☆"}
+                </button>
+
+            </td>
+
+        `;
+
+        tokenTable.appendChild(row);
+
+    });
+
+    tokenCount.textContent = tokens.length;
+}
+
+
+function toggleWatchlist(symbol) {
+
+    if (watchlist.includes(symbol)) {
+
+        watchlist = watchlist.filter(
+            item => item !== symbol
+        );
+
     } else {
-      btn.innerText = 'Connect Wallet';
-      btn.style.backgroundColor = 'var(--text)';
-      btn.style.color = 'var(--bg)';
+
+        watchlist.push(symbol);
+
     }
-  });
+
+    renderTokens();
+    renderWatchlist();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderHoldings();
-  initChart();
-  setupWalletButton();
-});
+
+function renderWatchlist() {
+
+    if (watchlist.length === 0) {
+
+        watchlistItems.innerHTML = `
+
+            <div class="empty-state">
+
+                <span>☆</span>
+
+                <p>No tokens added yet.</p>
+
+                <small>
+                    Click the star beside a token to add it.
+                </small>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    watchlistItems.innerHTML = "";
+
+
+    watchlist.forEach(symbol => {
+
+        const token = tokens.find(
+            item => item.symbol === symbol
+        );
+
+        if (!token) return;
+
+
+        const item = document.createElement("div");
+
+        item.className = "watch-item";
+
+        item.innerHTML = `
+
+            <div>
+
+                <div class="watch-name">
+                    ${token.name}
+                </div>
+
+                <div class="watch-price">
+                    ${formatPrice(token.price)}
+                </div>
+
+            </div>
+
+
+            <div class="${
+                token.change >= 0
+                    ? "change-positive"
+                    : "change-negative"
+            }">
+
+                ${
+                    token.change >= 0
+                        ? "+"
+                        : ""
+                }${token.change}%
+
+            </div>
+
+        `;
+
+        watchlistItems.appendChild(item);
+
+    });
+}
+
+
+/* SEARCH */
+
+searchInput.addEventListener(
+    "input",
+    function () {
+
+        const query =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+
+        const filteredTokens =
+            tokens.filter(token =>
+
+                token.name
+                    .toLowerCase()
+                    .includes(query)
+
+                ||
+
+                token.symbol
+                    .toLowerCase()
+                    .includes(query)
+
+            );
+
+
+        renderTokens(filteredTokens);
+
+    }
+);
+
+
+/* REFRESH */
+
+document
+    .getElementById("refreshButton")
+    .addEventListener(
+        "click",
+        function () {
+
+            const button =
+                document.getElementById(
+                    "refreshButton"
+                );
+
+            button.textContent = "Refreshing...";
+
+
+            setTimeout(() => {
+
+                button.textContent = "Refresh";
+
+                renderTokens();
+
+            }, 700);
+
+        }
+    );
+
+
+/* DARK MODE */
+
+document
+    .getElementById("themeButton")
+    .addEventListener(
+        "click",
+        function () {
+
+            document.body.classList.toggle("dark");
+
+        }
+    );
+
+
+/* INITIAL LOAD */
+
+renderTokens();
+renderWatchlist();
